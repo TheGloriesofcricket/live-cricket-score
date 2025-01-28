@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Cricket Score</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding-top: 20px;
+        }
+        .score {
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .match-status {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="score" id="score">Loading live score...</div>
+    <div class="match-status" id="status"></div>
+
+    <script>
+        const apiKey = 'c1dda4dc-2c05-4057-a558-9d322530f0bc';  // Your CricAPI key
+        const url = `https://cricapi.com/api/matches?apikey=${apiKey}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.matches && data.matches.length > 0) {
+                    const match = data.matches[0];  // Get the first match
+                    const team1 = match.team1;
+                    const team2 = match.team2;
+                    const status = match.status;
+                    const score1 = match.score && match.score[team1] ? match.score[team1] : 'N/A';
+                    const score2 = match.score && match.score[team2] ? match.score[team2] : 'N/A';
+
+                    document.getElementById('score').innerHTML = `${team1}: ${score1} vs ${team2}: ${score2}`;
+                    document.getElementById('status').innerHTML = `Status: ${status}`;
+                } else {
+                    document.getElementById('score').innerHTML = 'No live matches at the moment.';
+                    document.getElementById('status').innerHTML = '';
+                }
+            })
+            .catch(error => {
+                document.getElementById('score').innerHTML = 'Error fetching data.';
+                document.getElementById('status').innerHTML = '';
+                console.error('Error fetching live cricket score:', error);
+            });
+    </script>
+</body>
+</html>
